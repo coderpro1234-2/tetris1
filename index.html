@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tetris</title>
+  </head>
+  <body>
+    <canvas width="240" height="400" id="gamescreen"></canvas>
+    <div hidden>
+      <img id="tile0" src="images/tiles/tile0.png">
+      <img id="tile1" src="images/tiles/tile1.png">
+      <img id="tile2" src="images/tiles/tile2.png">
+      <img id="tile3" src="images/tiles/tile3.png">
+      <img id="tile4" src="images/tiles/tile4.png">
+      <img id="tile5" src="images/tiles/tile5.png">
+      <img id="tile6" src="images/tiles/tile6.png">
+      <img id="tile7" src="images/tiles/tile7.png">
+      <img id="tile8" src="images/tiles/tile8.png">
+    </div>
+  </body>
+  <script>
+    const screentiles = [8,8,8,8,8,8,8,8,8,8,8,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,0,0,0,0,0,0,0,0,0,0,8,
+  8,8,8,8,8,8,8,8,8,8,8,8]
+    const gametiles = [0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0,
+  0,0,0,0,0,0,0,0,0,0]
+    var newtile = 1
+    var canvas = document.getElementById("gamescreen")
+    var ctx = canvas.getContext("2d")
+    function randnumber(min, max) {
+      return Math.floor(Math.random() * (max - min + 1) ) + min;
+    }
+    function gettileid(id) {
+      return document.getElementById("tile"+id);
+    }
+    function drawcolour() {
+      count = 0
+      a = 0
+      b = 0
+      i = 0
+      while (i < 20) {
+        b = 0
+        i2 = 0
+        while (i2 < 12) {
+          ctx.drawImage(gettileid(screentiles[count]), b, a, 20, 20)
+          count++
+          b += 20
+          i2 ++
+        }
+        a += 20
+        i ++
+      }
+      count = 0
+      a = 20
+      b = 20
+      i = 0
+      while (i < 18) {
+        b = 20
+        i2 = 0
+        while (i2 < 10) {
+          ctx.drawImage(gettileid(gametiles[count]), b, a, 20, 20)
+          count++
+          b += 20
+          i2 ++
+        }
+        a += 20
+        i ++
+      }
+    }
+    function drawtiles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      drawcolour()
+    }
+    function checkcoll(tile) {
+      if (isNaN(gametiles[tile])) {
+        return true;
+      }
+      if (!gametiles[tile] == 0) {
+        return true;
+      }
+    }
+    function moveplayer() {
+      if (newtile == 1) {
+        playertile = randnumber(1, 7)
+        playerpos = randnumber(1, 10)
+        newtile = 0
+        if (checkcoll(playerpos)) {
+          alert("ur ded")
+          window.location.reload()
+        }
+        gametiles[playerpos] = playertile
+      }
+      else {
+        gametiles[playerpos] = 0
+        playerpos += 10
+        if (checkcoll(playerpos)) {
+          playerpos -= 10
+          newtile = 1
+          gametiles[playerpos] = playertile
+          drawtiles()
+          moveplayer()
+        }
+        gametiles[playerpos] = playertile
+        drawtiles()
+      }
+    }
+    function clearline(line) {
+      gametiles[playerpos] = 0
+      gametiles.splice(line*10, 10)
+      gametiles.unshift(0,0,0,0,0,0,0,0,0,0)
+      gametiles[playerpos] = playertile
+      drawtiles()
+    }
+    function checklines() {
+      gametiles[playerpos] = 0
+      drawtiles()
+      i = 0
+      while(i < 18) {
+        i2 = 0
+        blocks = 0
+        while(i2 < 10) {
+          if (!gametiles[((i*10)+i2)] == 0) {
+            blocks ++
+          }
+          i2 ++
+        }
+        if (blocks == 10) {
+          clearline(i)
+        }
+        i ++
+      }
+      gametiles[playerpos] = playertile
+      drawtiles()
+    }
+    window.onload = function(){
+      setInterval(function(){
+        drawcolour()
+      }, 1)
+      setInterval(function(){
+        moveplayer()
+        checklines()
+      }, 1000)
+      document.addEventListener("keydown", function(event){
+        if (event.key == "ArrowLeft") {
+          if (!Number.isInteger(playerpos/10)) {
+            gametiles[playerpos] = 0
+            drawtiles()
+            playerpos -= 1
+            if (checkcoll(playerpos)) {
+              playerpos += 1
+            }
+            gametiles[playerpos] = playertile
+            drawcolour()
+          }
+        }
+        if (event.key == "ArrowRight") {
+          if (![9,19,29,39,49,59,69,79,89,99,109,119,129,139,149,159,169,179,189].includes(playerpos)) {
+            gametiles[playerpos] = 0
+            drawtiles()
+            playerpos += 1
+            if (checkcoll(playerpos)) {
+              playerpos -= 1
+            }
+            gametiles[playerpos] = playertile
+            drawcolour()
+          }
+        }
+        if (event.key == "ArrowDown") {
+          gametiles[playerpos] = 0
+          drawtiles()
+          playerpos += 10
+          if (checkcoll(playerpos)) {
+            playerpos -= 10
+            newtile = 1
+            gametiles[playerpos] = playertile
+            drawtiles()
+            moveplayer()
+          }
+          gametiles[playerpos] = playertile
+          drawtiles()
+        }
+      })
+    }
+  </script>
+</html>
