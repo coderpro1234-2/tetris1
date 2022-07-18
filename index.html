@@ -167,10 +167,10 @@
     window.onload = function(){
       setInterval(function(){
         drawcolour()
+        checklines()
       }, 1)
       setInterval(function(){
         moveplayer()
-        checklines()
       }, 1000)
       document.addEventListener("keydown", function(event){
         if (event.key == "ArrowLeft") {
